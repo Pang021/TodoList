@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseDatabase
+import NVActivityIndicatorView
 
 class TodoListViewController: UIViewController {
 
@@ -45,7 +46,12 @@ class TodoListViewController: UIViewController {
     }
     
     private func fetchDataFromDatabase(completion: @escaping (_ data: [String])-> Void) {
+        
+        
         self.databaseReference = Database.database().reference()
+        self.indicatorView(isLoad: true)
+        
+        
         var tempTodo = [String]()
 
         self.databaseReference.child("TodoList2").observeSingleEvent(of: .value) { (dataSnapshot) in
@@ -54,14 +60,18 @@ class TodoListViewController: UIViewController {
                     let value = item.value as? String {
                     tempTodo.append(value)
                 }
+                self.indicatorView(isLoad: false)
             }
             completion(tempTodo)
         }
+        
     }
     
     @IBAction func AddItemClicked(_ sender: Any) {
         self.performSegue(withIdentifier: TodoListViewController.segueIdentifier, sender: nil)
     }
+    //MARK: - UITableViewDelegate
+    
     
 }
 
@@ -81,27 +91,40 @@ extension TodoListViewController: UITableViewDataSource {
 }
 
 //MARK: - UITableViewDelegate
-extension TodoListViewController: UITableViewDelegate {
+extension TodoListViewController: UITableViewDelegate{
 
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
     
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
             completion(true)
         }
-//        action.image = trush
+        //ction.image = trush
         action.backgroundColor = .red
-
         return UISwipeActionsConfiguration(actions: [action])
-    }
-   
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Check") { (action, view, completion) in
             completion(true)
         }
-//        action.image = check
+          //ction.image = check
         action.backgroundColor = .green
         return UISwipeActionsConfiguration(actions: [action])
     }
+}
+
+extension TodoListViewController : NVActivityIndicatorViewable{
+    
+    //MARK: - Indicator load
+    func indicatorView(isLoad: Bool)
+    {
+        switch isLoad {
+        case true:
+            startAnimating(type: .ballRotateChase)
+        default:
+            stopAnimating()
+        }
+    }
+}
 
