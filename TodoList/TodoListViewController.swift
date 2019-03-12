@@ -19,7 +19,7 @@ class TodoListViewController: UIViewController {
     
     static let segueIdentifier = "todoListGoToAddItem"
     static let cellIdentifier = "TodoListCell"
-    var todoListDataSource = [String]()
+    var todoListDataSource = [DataSnapshot]()
     
     // MARK: View's Life Cycle
     override func viewDidLoad() {
@@ -42,23 +42,21 @@ class TodoListViewController: UIViewController {
     }
     
     private func clearTodoListDataSource() {
-        self.todoListDataSource = [String]()
+        self.todoListDataSource.removeAll()
     }
     
-    private func fetchDataFromDatabase(completion: @escaping (_ data: [String])-> Void) {
-        
+    private func fetchDataFromDatabase(completion: @escaping (_ data: [DataSnapshot])-> Void) {
         
         self.databaseReference = Database.database().reference()
         self.indicatorView(isLoad: true)
         
         
-        var tempTodo = [String]()
+        var tempTodo = [DataSnapshot]()
 
         self.databaseReference.child("TodoList2").observeSingleEvent(of: .value) { (dataSnapshot) in
             for child in dataSnapshot.children {
-                if let item = child as? DataSnapshot,
-                    let value = item.value as? String {
-                    tempTodo.append(value)
+                if let item = child as? DataSnapshot {
+                    tempTodo.append(item)
                 }
                 self.indicatorView(isLoad: false)
             }
@@ -85,7 +83,7 @@ extension TodoListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TodoListViewController.cellIdentifier, for: indexPath)
         let todo = todoListDataSource[indexPath.row]
-        cell.textLabel?.text = todo
+        cell.textLabel?.text = todo.value as? String
         return cell
     }
 }
@@ -93,22 +91,31 @@ extension TodoListViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension TodoListViewController: UITableViewDelegate{
 
-    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
     
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
-            completion(true)
+            //delete data form firebase
+            let todo = self.todoListDataSource[indexPath.row]
+            todo.ref.removeValue(completionBlock: { (_, _) in
+                self.todoListDataSource.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                completion(true)
+            })
         }
-        //ction.image = trush
+        action.image = UIImage(named: "trush")
         action.backgroundColor = .red
         return UISwipeActionsConfiguration(actions: [action])
+        
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Check") { (action, view, completion) in
+            
+            
+            
             completion(true)
         }
-          //ction.image = check
+        action.image = UIImage(named: "check")
         action.backgroundColor = .green
         return UISwipeActionsConfiguration(actions: [action])
     }
