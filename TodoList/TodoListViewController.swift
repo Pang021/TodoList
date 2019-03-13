@@ -12,14 +12,16 @@ import NVActivityIndicatorView
 
 class TodoListViewController: UIViewController {
 
-    
     // MARK: IBOUTLET Properties
     @IBOutlet weak var tableView: UITableView!
+    
     private var databaseReference: DatabaseReference!
     
     static let segueIdentifier = "todoListGoToAddItem"
     static let cellIdentifier = "TodoListCell"
+    
     var todoListDataSource = [DataSnapshot]()
+    var checked = Set<IndexPath>()
     
     // MARK: View's Life Cycle
     override func viewDidLoad() {
@@ -70,7 +72,14 @@ class TodoListViewController: UIViewController {
     }
     //MARK: - UITableViewDelegate
     
-    
+    func selectItem(_ indexPath: IndexPath) {
+        if checked.contains(indexPath) {
+            checked.remove(indexPath)
+        }else{
+            checked.insert(indexPath)
+        }
+        tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
+    }
 }
 
 //MARK: - UITableViewDataSource
@@ -81,9 +90,16 @@ extension TodoListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TodoListViewController.cellIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: TodoListViewController.cellIdentifier, for: indexPath) as! CustomTableViewCell
         let todo = todoListDataSource[indexPath.row]
-        cell.textLabel?.text = todo.value as? String
+
+        cell.messageTextLable1.text = String(describing: todo.value!)
+
+        if checked.contains(indexPath) {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         return cell
     }
 }
@@ -94,7 +110,7 @@ extension TodoListViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
     
         let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completion) in
-            //delete data form firebase
+            
             let todo = self.todoListDataSource[indexPath.row]
             todo.ref.removeValue(completionBlock: { (_, _) in
                 self.todoListDataSource.remove(at: indexPath.row)
@@ -102,24 +118,50 @@ extension TodoListViewController: UITableViewDelegate{
                 completion(true)
             })
         }
+        
         action.image = UIImage(named: "trush")
         action.backgroundColor = .red
         return UISwipeActionsConfiguration(actions: [action])
         
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectItem(indexPath)
+    }
+
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        guard let cell = tableView.cellForRow(at: indexPath) else { return }
+//        // 2
+//
+//        let checkItem = todoListDataSource[indexPath.row]
+//
+//         //3
+//        let toggledCompletion = !checkItem.complete
+//        // 4
+//        checkItem(cell, isCompleted: toggledCompletion)
+//        // 5
+//        checkItem.ref?.updateChildValues([
+//            "completed": toggledCompletion
+//            ])
+//
+//    }
+
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .destructive, title: "Check") { (action, view, completion) in
-            
-            
-            
+        
+        let action = UIContextualAction(style: .normal, title: "Check") { (action, view, completion) in
+            self.selectItem(indexPath)
             completion(true)
         }
         action.image = UIImage(named: "check")
         action.backgroundColor = .green
         return UISwipeActionsConfiguration(actions: [action])
     }
+
+
 }
+
+
+
 
 extension TodoListViewController : NVActivityIndicatorViewable{
     

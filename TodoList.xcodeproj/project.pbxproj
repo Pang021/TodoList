@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		385B640B2237B36E0085DC5F /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B640A2237B36E0085DC5F /* CustomTableViewCell.swift */; };
 		385FEC8F222F7DE90007B17A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385FEC8E222F7DE90007B17A /* AppDelegate.swift */; };
 		385FEC94222F7DE90007B17A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 385FEC92222F7DE90007B17A /* Main.storyboard */; };
 		385FEC96222F7DEA0007B17A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 385FEC95222F7DEA0007B17A /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		35CB39FD4B1C3BE1A2C89663 /* Pods-TodoList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodoList.release.xcconfig"; path = "Pods/Target Support Files/Pods-TodoList/Pods-TodoList.release.xcconfig"; sourceTree = "<group>"; };
+		385B640A2237B36E0085DC5F /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		385FEC8B222F7DE80007B17A /* TodoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		385FEC8E222F7DE90007B17A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		385FEC93222F7DE90007B17A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				385FECA0222F7FEB0007B17A /* GoogleService-Info.plist */,
 				385FECA82230D0E40007B17A /* TodoListViewController.swift */,
 				385FECAA2230D8410007B17A /* AddTodoViewController.swift */,
+				385B640A2237B36E0085DC5F /* CustomTableViewCell.swift */,
 			);
 			path = TodoList;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 			files = (
 				385FECA92230D0E40007B17A /* TodoListViewController.swift in Sources */,
 				385FECAB2230D8410007B17A /* AddTodoViewController.swift in Sources */,
+				385B640B2237B36E0085DC5F /* CustomTableViewCell.swift in Sources */,
 				385FEC8F222F7DE90007B17A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
