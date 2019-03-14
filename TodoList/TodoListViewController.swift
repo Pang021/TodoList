@@ -21,7 +21,7 @@ class TodoListViewController: UIViewController {
     static let cellIdentifier = "TodoListCell"
     
     var todoListDataSource = [DataSnapshot]()
-    var checked = Set<IndexPath>()
+//    var checked = Set<IndexPath>()
     
     // MARK: View's Life Cycle
     override func viewDidLoad() {
@@ -55,7 +55,7 @@ class TodoListViewController: UIViewController {
         
         var tempTodo = [DataSnapshot]()
 
-        self.databaseReference.child("TodoList2").observeSingleEvent(of: .value) { (dataSnapshot) in
+        self.databaseReference.child("TodoList3").observeSingleEvent(of: .value) { (dataSnapshot) in
             for child in dataSnapshot.children {
                 if let item = child as? DataSnapshot {
                     tempTodo.append(item)
@@ -73,13 +73,28 @@ class TodoListViewController: UIViewController {
     //MARK: - UITableViewDelegate
     
     func selectItem(_ indexPath: IndexPath) {
-        if checked.contains(indexPath) {
-            checked.remove(indexPath)
-        }else{
-            checked.insert(indexPath)
+        let todo = self.todoListDataSource[indexPath.row]
+        var todoItem = todo.value as! [String: Any]
+        
+        if todoItem["check"] as! Int == 1 {
+            todoItem["check"] = 0
+        } else {
+           todoItem["check"] = 1
         }
+        
+        todo.ref.updateChildValues(todoItem)
+        
+//        self.databaseReference.child("TodoList3").child(todo.key)
+        
+//        if checked.contains(indexPath) {
+//            checked.remove(indexPath)
+//        }else{
+//            checked.insert(indexPath)
+//        }
+        
         tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
     }
+    
 }
 
 //MARK: - UITableViewDataSource
@@ -91,11 +106,15 @@ extension TodoListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TodoListViewController.cellIdentifier, for: indexPath) as! CustomTableViewCell
+        
         let todo = todoListDataSource[indexPath.row]
+        let todoItem = todo.value as! [String: Any]
+        
+        cell.messageTextLable1.text = String(describing: todoItem["title"]! )
+      
+//        })
 
-        cell.messageTextLable1.text = String(describing: todo.value!)
-
-        if checked.contains(indexPath) {
+        if todoItem["check"] as! Int == 1 {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -129,22 +148,7 @@ extension TodoListViewController: UITableViewDelegate{
         selectItem(indexPath)
     }
 
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-//        // 2
-//
-//        let checkItem = todoListDataSource[indexPath.row]
-//
-//         //3
-//        let toggledCompletion = !checkItem.complete
-//        // 4
-//        checkItem(cell, isCompleted: toggledCompletion)
-//        // 5
-//        checkItem.ref?.updateChildValues([
-//            "completed": toggledCompletion
-//            ])
-//
-//    }
+
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
@@ -159,9 +163,6 @@ extension TodoListViewController: UITableViewDelegate{
 
 
 }
-
-
-
 
 extension TodoListViewController : NVActivityIndicatorViewable{
     

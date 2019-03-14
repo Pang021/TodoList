@@ -50,7 +50,10 @@ class AddTodoViewController: UIViewController {
     private func addItem(item: String) {
         // database store data from textfield
         self.dataBaseReference = Database.database().reference()
-        self.dataBaseReference.child("TodoList2").childByAutoId().setValue(item)
+        let todo = [ "title": item ,
+                     "check": 0 ] as [String : Any]
+        self.dataBaseReference.child("TodoList3").childByAutoId().setValue(todo)
+        
     }
     
     private func validateItem(item: String) -> Bool {
