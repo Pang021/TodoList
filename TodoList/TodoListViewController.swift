@@ -22,6 +22,8 @@ class TodoListViewController: UIViewController {
     static let cellIdentifier = "TodoListCell"
     
     var todoListDataSource = [DataSnapshot]()
+    var filtered: [DataSnapshot] = []
+    var searchActive = false
 //    var checked = Set<IndexPath>()
     
     // MARK: View's Life Cycle
@@ -120,13 +122,13 @@ class TodoListViewController: UIViewController {
 extension TodoListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoListDataSource.count
+        return searchActive ? filtered.count : todoListDataSource.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TodoListViewController.cellIdentifier, for: indexPath) as! CustomTableViewCell
         
-        let todo = todoListDataSource[indexPath.row]
+        let todo = searchActive ? filtered[indexPath.row] : todoListDataSource[indexPath.row]
         let todoItem = todo.value as! [String: Any]
         
         cell.messageTextLable1.text = String(describing: todoItem["title"]! )
@@ -167,8 +169,6 @@ extension TodoListViewController: UITableViewDelegate{
         selectItem(indexPath)
     }
 
-
-
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .normal, title: "Check") { (action, view, completion) in
@@ -198,11 +198,30 @@ extension TodoListViewController : NVActivityIndicatorViewable{
 extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
         searchBar.resignFirstResponder()
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let text = searchBar.text
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        searchActive = !searchText.isEmpty
+
+        filtered = todoListDataSource.filter({ snapShot -> Bool in
+            
+            let todoItem = snapShot.value as! [String: Any]
+            let text = todoItem["title"] as! NSString
+            
+            let range: NSRange = text.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+            return range.location != NSNotFound
+        })
+       
+        tableView.reloadData()
         
     }
+    
 }
+
+
+
+
