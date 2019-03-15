@@ -169,16 +169,16 @@ extension TodoListViewController: UITableViewDelegate{
         selectItem(indexPath)
     }
 
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
-        let action = UIContextualAction(style: .normal, title: "Check") { (action, view, completion) in
-            self.selectItem(indexPath)
-            completion(true)
-        }
-        action.image = UIImage(named: "check")
-        action.backgroundColor = .green
-        return UISwipeActionsConfiguration(actions: [action])
-    }
+//    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//
+//        let action = UIContextualAction(style: .normal, title: "Check") { (action, view, completion) in
+//            self.selectItem(indexPath)
+//            completion(true)
+//        }
+//        action.image = UIImage(named: "check")
+//        action.backgroundColor = .green
+//        return UISwipeActionsConfiguration(actions: [action])
+//    }
 }
 
 extension TodoListViewController : NVActivityIndicatorViewable{
@@ -195,6 +195,7 @@ extension TodoListViewController : NVActivityIndicatorViewable{
     }
 }
 
+//MARK: - Search Function
 extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
