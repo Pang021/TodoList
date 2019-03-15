@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="UM0-EW-Bqe">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="120" width="375" height="547"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TodoListCell" rowHeight="30" id="nHC-ff-dJ7" customClass="CustomTableViewCell" customModule="TodoList" customModuleProvider="target">
@@ -48,13 +48,20 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <searchBar contentMode="redraw" showsCancelButton="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bKt-3o-JkL">
+                                <rect key="frame" x="0.0" y="64" width="375" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="2Fz-cV-Jps" firstAttribute="bottom" secondItem="UM0-EW-Bqe" secondAttribute="bottom" id="F2z-Bt-a4z"/>
+                            <constraint firstItem="bKt-3o-JkL" firstAttribute="top" secondItem="2Fz-cV-Jps" secondAttribute="top" id="HTe-3g-IHO"/>
+                            <constraint firstItem="UM0-EW-Bqe" firstAttribute="top" secondItem="bKt-3o-JkL" secondAttribute="bottom" id="Lqq-nL-utI"/>
+                            <constraint firstItem="bKt-3o-JkL" firstAttribute="trailing" secondItem="2Fz-cV-Jps" secondAttribute="trailing" id="PxI-1R-pG5"/>
                             <constraint firstItem="UM0-EW-Bqe" firstAttribute="leading" secondItem="2Fz-cV-Jps" secondAttribute="leading" id="QlG-T4-F6s"/>
-                            <constraint firstItem="UM0-EW-Bqe" firstAttribute="top" secondItem="2Fz-cV-Jps" secondAttribute="top" id="Xvo-Ag-Lss"/>
                             <constraint firstItem="2Fz-cV-Jps" firstAttribute="trailing" secondItem="UM0-EW-Bqe" secondAttribute="trailing" id="nYV-j2-kkR"/>
+                            <constraint firstItem="bKt-3o-JkL" firstAttribute="leading" secondItem="2Fz-cV-Jps" secondAttribute="leading" id="v16-TT-JXz"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Fz-cV-Jps"/>
                     </view>
@@ -66,6 +73,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="searchBar" destination="bKt-3o-JkL" id="XJs-Kb-ON6"/>
                         <outlet property="tableView" destination="UM0-EW-Bqe" id="Jhr-u7-aDs"/>
                         <segue destination="r2P-DR-zR5" kind="show" identifier="todoListGoToAddItem" id="NlD-Ia-cHn"/>
                     </connections>
@@ -100,7 +108,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UZm-Gp-cCL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2063" y="1772"/>
+            <point key="canvasLocation" x="2081" y="1773"/>
         </scene>
         <!--Add Todo View Controller-->
         <scene sceneID="MaN-Tv-K2b">

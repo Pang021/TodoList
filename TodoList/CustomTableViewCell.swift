@@ -13,9 +13,6 @@ class CustomTableViewCell: UITableViewCell {
     
     @IBOutlet weak var messageTextLable1: UILabel!
 
-    
-    
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

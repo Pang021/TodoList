@@ -22,6 +22,7 @@ class AddTodoViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    //MARK: - Add item when out of condition
     @IBAction func addItemClicked(_ sender: Any) {
         let item = addItemTextField.text ?? ""
         if validateItem(item: item) {
@@ -35,6 +36,7 @@ class AddTodoViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    //MARK: - Condition when typing in textfield
     @IBAction func textFieldEditngChanged(_ sender: UITextField) {
         if sender == self.addItemTextField {
             let text = addItemTextField.text ?? ""
@@ -45,7 +47,8 @@ class AddTodoViewController: UIViewController {
             }
         }
     }
-    
+
+    //MARK: - Add item success
     
     private func addItem(item: String) {
         // database store data from textfield

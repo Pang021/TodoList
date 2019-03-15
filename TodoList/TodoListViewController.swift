@@ -14,8 +14,9 @@ class TodoListViewController: UIViewController {
 
     // MARK: IBOUTLET Properties
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
-    private var databaseReference: DatabaseReference!
+    private lazy var databaseReference = Database.database().reference()
     
     static let segueIdentifier = "todoListGoToAddItem"
     static let cellIdentifier = "TodoListCell"
@@ -27,20 +28,22 @@ class TodoListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        observeEvent()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         clearTodoListDataSource()
-        fetchDataFromDatabase { [weak self] (todoItems) in
-            self?.todoListDataSource.append(contentsOf: todoItems)
-            self?.tableView.reloadData()
-        }
+//        fetchDataFromDatabase { [weak self] (todoItems) in
+//            self?.todoListDataSource.append(contentsOf: todoItems)
+//            self?.tableView.reloadData()
+//        }
     }
     
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
+        searchBar.delegate = self
     }
     
     private func clearTodoListDataSource() {
@@ -49,9 +52,7 @@ class TodoListViewController: UIViewController {
     
     private func fetchDataFromDatabase(completion: @escaping (_ data: [DataSnapshot])-> Void) {
         
-        self.databaseReference = Database.database().reference()
         self.indicatorView(isLoad: true)
-        
         
         var tempTodo = [DataSnapshot]()
 
@@ -67,9 +68,27 @@ class TodoListViewController: UIViewController {
         
     }
     
+    func observeEvent() {
+        self.indicatorView(isLoad: true)
+        databaseReference.child("TodoList3").observe(.value) { (snapShot) in
+            var data: [DataSnapshot] = []
+            for child in snapShot.children {
+                if let item = child as? DataSnapshot {
+                    data.append(item)
+                }
+                self.indicatorView(isLoad: false)
+            }
+            self.todoListDataSource = data
+            self.tableView.reloadData()
+            
+        }
+        
+    }
+    
     @IBAction func AddItemClicked(_ sender: Any) {
         self.performSegue(withIdentifier: TodoListViewController.segueIdentifier, sender: nil)
     }
+    
     //MARK: - UITableViewDelegate
     
     func selectItem(_ indexPath: IndexPath) {
@@ -82,17 +101,17 @@ class TodoListViewController: UIViewController {
            todoItem["check"] = 1
         }
         
-        todo.ref.updateChildValues(todoItem)
         
-//        self.databaseReference.child("TodoList3").child(todo.key)
+        
+        self.databaseReference.child("TodoList3").child(todo.key).setValue(todoItem)
         
 //        if checked.contains(indexPath) {
 //            checked.remove(indexPath)
 //        }else{
 //            checked.insert(indexPath)
 //        }
-        
-        tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
+       
+        //tableView.reloadRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
     }
     
 }
@@ -160,8 +179,6 @@ extension TodoListViewController: UITableViewDelegate{
         action.backgroundColor = .green
         return UISwipeActionsConfiguration(actions: [action])
     }
-
-
 }
 
 extension TodoListViewController : NVActivityIndicatorViewable{
@@ -178,3 +195,14 @@ extension TodoListViewController : NVActivityIndicatorViewable{
     }
 }
 
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let text = searchBar.text
+        
+    }
+}
